@@ -1,6 +1,7 @@
 import "./App.css";
 import axios from "axios";
 import { useEffect, useReducer } from "react";
+import useFetch from "./hooks/useFetch";
 
 const initialState = {
   isLoading: false,
@@ -31,26 +32,32 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log("state", state);
+  const [{ response, error, isLoading }, doFetch] = useFetch("http://localhost:3000/users")
 
   useEffect(() => {
     dispatch({ type: "getUsersStart" });
 
-    const getData = () => {
-      axios.get("http://localhost:3000/users").then((response) => {
-        setTimeout(() => {
-          dispatch({ type: "getUsersSuccess", payload: response.data });
-        }, 1000);
-      });
-    };
+    doFetch()
 
-    getData();
-  }, []);
+    // const getData = () => {
+    //   axios.get("http://localhost:3000/users").then((response) => {
+    //     setTimeout(() => {
+    //       dispatch({ type: "getUsersSuccess", payload: response.data });
+    //     }, 1000);
+    //   });
+    // };
+
+    // getData();
+  }, [doFetch]);
 
   return (
     <div>
-      {state.isLoading && <div>Loading... </div>}
+      {isLoading && <div>Loading... </div>}
+      {/* {state.isLoading && <div>Loading... </div>} */}
       {state.data?.map((user) => (
+        <div key={user.id}>{user.name}</div>
+      ))}
+      {response?.map((user) => (
         <div key={user.id}>{user.name}</div>
       ))}
     </div>
