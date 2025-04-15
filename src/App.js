@@ -1,7 +1,7 @@
-import "./App.css";
-import axios from "axios";
 import { useEffect, useReducer } from "react";
+import "./App.css";
 import useFetch from "./hooks/useFetch";
+import LocalStorageInput from "./components/LocalStorageInput";
 
 const initialState = {
   isLoading: false,
@@ -32,12 +32,14 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [{ response, error, isLoading }, doFetch] = useFetch("http://localhost:3000/users")
+  const [{ response, error, isLoading }, doFetch] = useFetch(
+    "http://localhost:3000/users"
+  );
 
   useEffect(() => {
     dispatch({ type: "getUsersStart" });
 
-    doFetch()
+    doFetch();
 
     // const getData = () => {
     //   axios.get("http://localhost:3000/users").then((response) => {
@@ -60,6 +62,7 @@ function App() {
       {response?.map((user) => (
         <div key={user.id}>{user.name}</div>
       ))}
+      <LocalStorageInput />
     </div>
   );
 }
