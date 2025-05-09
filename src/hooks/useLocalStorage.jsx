@@ -1,19 +1,22 @@
 import { useState } from "react";
 
 export const useLocalStorage = (key, initialValue) => {
-  const [storedValue, setStoredValue] = useState(() => {
+  const getValue = () => {
     if (typeof window === "undefined") {
       return initialValue;
     }
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ? JSON?.parse(item) : initialValue;
     } catch (error) {
-      console.error(error);
+      error && console.error(error);
     }
-  });
+  };
+
+  const [storedValue, setStoredValue] = useState(getValue());
 
   const setValue = (value) => {
+    console.log("setValue called", value);
     try {
       setStoredValue(value);
 
@@ -21,9 +24,9 @@ export const useLocalStorage = (key, initialValue) => {
         localStorage.setItem(key, JSON.stringify(value));
       }
     } catch (error) {
-      console.error(error);
+      error && console.error(error);
     }
   };
 
-  return [storedValue, setValue];
+  return [storedValue, setValue, { getValue }];
 };
