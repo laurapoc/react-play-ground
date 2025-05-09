@@ -1,68 +1,37 @@
-import { useEffect, useReducer } from "react";
+import { Link, Route, Routes } from "react-router-dom";
+
 import "./App.css";
-import useFetch from "./hooks/useFetch";
-import LocalStorageInput from "./components/LocalStorageInput";
-
-const initialState = {
-  isLoading: false,
-  error: null,
-  data: null,
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "getUsersStart": {
-      return {
-        ...state,
-        isLoading: true,
-      };
-    }
-    case "getUsersSuccess": {
-      return {
-        ...state,
-        isLoading: false,
-        data: action.payload,
-      };
-    }
-    default: {
-      return state;
-    }
-  }
-};
+import Dashboard from "./components/Dashboard";
+import Private from "./components/Private";
+import Layout from "./components/Layout";
+import Article from "./components/Article";
+import Auth from "./components/Auth";
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [{ response, error, isLoading }, doFetch] = useFetch(
-    "http://localhost:3000/users"
-  );
-
-  useEffect(() => {
-    dispatch({ type: "getUsersStart" });
-
-    doFetch();
-
-    // const getData = () => {
-    //   axios.get("http://localhost:3000/users").then((response) => {
-    //     setTimeout(() => {
-    //       dispatch({ type: "getUsersSuccess", payload: response.data });
-    //     }, 1000);
-    //   });
-    // };
-
-    // getData();
-  }, [doFetch]);
+  const slug = "1234";
 
   return (
     <div>
-      {isLoading && <div>Loading... </div>}
-      {/* {state.isLoading && <div>Loading... </div>} */}
-      {state.data?.map((user) => (
-        <div key={user.id}>{user.name}</div>
-      ))}
-      {response?.map((user) => (
-        <div key={user.id}>{user.name}</div>
-      ))}
-      <LocalStorageInput />
+      <div className="navbar">
+        <Link to="/">Dashboard</Link>
+        <Link to="/private">Private</Link>
+        <Link to={`/articles/${slug}`}>Article</Link>
+      </div>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route
+            path="/private"
+            element={
+              <Auth>
+                <Private />
+              </Auth>
+            }
+          />
+          <Route path="/articles/:slug" element={<Article />} />
+          <Route path="*" element={<h1>404 Not Found</h1>} />
+        </Route>
+      </Routes>
     </div>
   );
 }
