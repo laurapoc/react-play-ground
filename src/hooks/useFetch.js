@@ -11,14 +11,13 @@ const useFetch = (url) => {
     axios
       .get(url)
       .then((response) => {
-        console.log(response);
         setTimeout(() => {
           setResponse(response.data);
           setIsLoading(false);
         }, 300);
       })
       .catch((error) => {
-        setError(error.message);
+        setError(error.response.data || "server error");
         setIsLoading(false);
       });
   }, [url]);
