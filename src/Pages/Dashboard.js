@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect } from "react";
 import useFetch from "../hooks/useFetch";
-import LocalStorageInput from "./LocalStorageInput";
+import LocalStorageInput from "../components/LocalStorageInput";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const initialState = {
